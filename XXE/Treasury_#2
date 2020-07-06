@@ -9,7 +9,7 @@ Which mean we can do XXE, the payload was simple:
 
 <!DOCTYPE+foo+[ <!ENTITY+xxe+SYSTEM "file:///flag">+]>
 
-and call `&xxe;` in <excerpt> tag after that will do the work, 
+and call &xxe; in <excerpt> tag after that will do the work, 
 but one thing to remember that we also need to URL-encode the & because it is the seperate between parameters:
 
 %26xxe%3B+%0D%0A
