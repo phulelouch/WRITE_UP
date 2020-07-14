@@ -1,4 +1,6 @@
-#### First thing first: this is the php code 
+#### First thing first: this is the php code, read it in raw
+
+
 
 <?php
 class Object 
@@ -74,5 +76,8 @@ if(isset($_GET['is_debug']) && $_GET['is_debug']==='1')
    show_source(__FILE__);
 }
 ?>
+
+The important part is unserialize(base64_decode($_GET['input']));
+
 
 
