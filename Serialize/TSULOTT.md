@@ -23,7 +23,7 @@ if(isset($_GET['input']))
     {
       echo "<center><strong><font color='white'>CONGRATULATION! You Won JACKPOT PriZe !!! </font></strong></center>". "<br><center><strong><font color='white' size='20'>".$obj->jackpot."</font></strong></center>";
       echo "<br><center><strong><font color='green' size='25'>".$flag."</font></strong></center><br>";
-      echo "<centerx><imgxx src='http://www.relatably.com/m/img/cross-memes/5378589.jpg' /></center>";
+      echo "<centerx><imgxx src=' ' /></center>";
 
     }
     else
