@@ -1,4 +1,4 @@
-#### First thing first: this is the php code, read it in raw
+### First thing first: this is the php code
 
 
  ```
@@ -105,7 +105,7 @@ echo base64_encode(serialize($input));
 3. foo-manroot (english) (dumping data via magic _destruct, but i think the author is wrong, its still compare null): https://foomanroot.github.io/post/ctf/meepwn/write-up/2017/09/28/meepwn-web.html
 4. bl4ckpr15m (english) (compare null): https://github.com/bl4ckpr15m/CTF-Writeups/blob/master/2017/MeePwn/web/TSULOTT/writeup%20%5Bby%20Jorge%20Chato%5D.md 
 
-#### 1.Fake object:
+#### 1. Fake object:
 - An “object” class is also defined in the source code:
  ```
 class Object 
