@@ -20,7 +20,7 @@ CREATE TABLE users (
   %22 UNION SELECT username,password_hash FROM users -- -
   So what I encounter is a bunch of md5 hash with rules
   <img src="https://github.com/phulelouch/WRITE_UP/blob/master/SQL_Injection/login_page.png">
-  <img src="https://github.com/phulelouch/WRITE_UP/blob/master/SQL_Injection/login_page2.png">
+  <img src="https://github.com/phulelouch/WRITE_UP/blob/master/SQL_Injection/login_page.png">
  With that it mean we have to crack it with its rule
  - The easiest was the noob password, just google it and login 
  - Then come to the phone number, using john the ripper with mask for rule:
