@@ -33,3 +33,9 @@ CREATE TABLE users (
 	done < "/home/phulelouch/Desktop/US.txt"
 done < "/home/phulelouch/Desktop/god.txt"
  ```
+- The next one is harder, with 12 digit numbers and md5 hash, I have to create a file list of that number in md5 hash and using them as list for John
+- The final one I can not solve but it is interesting: I follow 2 article
+https://blog.bitcrack.net/2013/09/cracking-hashes-with-other-language.html
+https://vxempire.xyz/repo/Hash%20Crack.pdf
+
+So 4 parts combie the result would be like this uiuctf{Dump_4nd_unh45h_637_d4t_
