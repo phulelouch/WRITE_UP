@@ -1,4 +1,4 @@
-### This is a very cool challenge, I didn't solve it (nearly), but, nah, just write down to remember stuff
+### This is a very cool challenge, I didn't solve it (nearly, the last one take time), but, nah, just write down to remember stuff
 This is a SQLite injection, how do I know it was SQLite, well fuzzing and sqlmap
 
 So the syntax of the payload is the same but the way to extract is different:
@@ -37,5 +37,7 @@ done < "/home/phulelouch/Desktop/god.txt"
 - The final one I can not solve but it is interesting: I follow 2 article
 https://blog.bitcrack.net/2013/09/cracking-hashes-with-other-language.html
 https://vxempire.xyz/repo/Hash%20Crack.pdf
-
+```
+john --format=raw-md5 flag1.txt  -1 d8d9dadb -2 808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebf  --mask=?1?2?1?2?1?2?1?2?1?2?1?2 --fork=12
+```
 So 4 parts combie the result would be like this uiuctf{Dump_4nd_unh45h_637_d4t_
